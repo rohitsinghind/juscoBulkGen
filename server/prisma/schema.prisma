@@ -7,11 +7,10 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/jusco_bulk_gen"
+  url      = "mysql://jusco_bulk_gen_2:MyPassword210@170.187.231.66:3306/jusco_bulk_gen_temp"
 }
 
 model customer {
-
   id                   String @id @unique
   application_no       String
   customer_id          String
@@ -53,11 +52,11 @@ model customer {
   remarks              String
   auth                 String
   application_status   String
-    freq String
-  category String
-  mobileAck String
-  area String
-  rate String
+  freq                 String
+  category             String
+  mobileAck            String
+  area                 String
+  rate                 String
 }
 
 model user {

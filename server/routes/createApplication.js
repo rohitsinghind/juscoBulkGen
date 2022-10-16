@@ -45,7 +45,7 @@ async function createApplication(usrData) {
   try {
     const as = await db.customer.create({
       data: {
-        id: `${Fname}/${dateTime}/${email}` || "undefined",
+        id: `${Fname}/${dateTime.getDate()}` || "undefined",
         application_no: `200/${Fname[(0, 3)]}/${mobile[(0, 3)]}` || "undefined",
         customer_id: `${Fname}/${dateTime}/${email}` || "undefined",
         status: "depo",
@@ -86,17 +86,17 @@ async function createApplication(usrData) {
         remarks: remarks || "undefined",
         auth: "undefined",
         application_status: "started",
-        freq :"Undefined",
-        category :"undefined",
-        mobileAck :"Undefiend",
+        freq: "Undefined",
+        category: "undefined",
+        mobileAck: "Undefiend",
         area: "Undefined",
-        rate: "undefined"
+        rate: "undefined",
       },
     });
     return {
       status: "success",
       message: `Application Created For User ${Fname}`,
-      id: `${Fname}/${dateTime}/${email}`,
+      id: `${Fname}/${dateTime.getDate()}`,
     };
   } catch (e) {
     return {
