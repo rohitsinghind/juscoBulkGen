@@ -45,7 +45,9 @@ async function createApplication(usrData) {
   try {
     const as = await db.customer.create({
       data: {
-        id: `${Fname}/${dateTime.getDate()}` || "undefined",
+        id:
+          `${Math.floor(Math.random() * 1000)}/${dateTime.getTime() / 1000}` ||
+          "undefined", //Time stamp in seconds
         application_no: `200/${Fname[(0, 3)]}/${mobile[(0, 3)]}` || "undefined",
         customer_id: `${Fname}/${dateTime}/${email}` || "undefined",
         status: "depo",
