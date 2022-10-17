@@ -1,10 +1,27 @@
 const { PrismaClient } = require("@prisma/client");
+const { sms } = require("./sendMessage");
 
 const db = new PrismaClient();
 
-async function createApplication(usrData) {
+async function createApplication(usrData, applicationNo) {
   const dateTime = new Date();
-  console.log(usrData);
+
+  // let appno = await db.track.findUnique({
+  //   where: {
+  //     id: 1,
+  //   },
+  // });
+  // console.log(appno);
+  // let addedval = appno.lastApplicationNo + 1;
+  // const applicationNo = db.track.update({
+  //   where: {
+  //     id: 1,
+  //   },
+  //   data: {
+  //     ApplicationNo: addedval,
+  //   },
+  // });
+  // console.log(appno.lastApplicationNo, applicationNo);
   const {
     salutation,
     Fname,
@@ -43,11 +60,16 @@ async function createApplication(usrData) {
     remarks,
   } = usrData;
   try {
+    const appliNo = `ph/${applicationNo}-${Math.floor(
+      Math.random() * 1000
+    )}/${dateTime.getFullYear()}`;
     const as = await db.customer.create({
       data: {
-        id: `${Fname}/${dateTime}/${email}` || "undefined",
-        application_no: `200/${Fname[(0, 3)]}/${mobile[(0, 3)]}` || "undefined",
-        customer_id: `${Fname}/${dateTime}/${email}` || "undefined",
+        id:
+          `${Math.floor(Math.random() * 1000)}/${dateTime.getTime()}` ||
+          "undefined",
+        application_no: appliNo || "undefined",
+        customer_id: appliNo || "undefined",
         status: "depo",
         salutation: salutation || "undefined",
         first_name: Fname || "undefined",
@@ -86,22 +108,32 @@ async function createApplication(usrData) {
         remarks: remarks || "undefined",
         auth: "undefined",
         application_status: "started",
-        freq :"Undefined",
-        category :"undefined",
-        mobileAck :"Undefiend",
+        freq: "Undefined",
+        category: "undefined",
+        mobileAck: "Undefiend",
         area: "Undefined",
-        rate: "undefined"
+        rate: "undefined",
       },
     });
+    const ab = await sms({
+      phone: `${mobile}`,
+      message: `${salutation} ${Fname} ${Lname}, Your application No 
+    ${appliNo} to TSUIL for Collection waste is submitted.`,
+    });
+    const mn = await sms({
+      phone: `${mobile}`,
+      message: `${"Track Your Application at http://bulk.jusco.rudrayati.in/trackYourApplication for more details"}`,
+    });
+
     return {
       status: "success",
-      message: `Application Created For User ${Fname}`,
-      id: `${Fname}/${dateTime}/${email}`,
+      message: `Application Created For User ${salutation} ${Fname} `,
+      applicationNo: appliNo,
     };
   } catch (e) {
     return {
       status: "Failed",
-      message: `No Application Created`,
+      message: `No Application Created ${e}`,
     };
   }
 }

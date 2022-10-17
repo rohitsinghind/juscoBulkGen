@@ -11,6 +11,7 @@ const { applicationStatus } = require("./routes/applicationstatus");
 const { changeStatus } = require("./routes/changeStatus");
 const { getAllApplication } = require("./routes/getAllapplications");
 const { sendToHod } = require("./routes/sentToHod");
+const { sms } = require("./routes/sendMessage");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "config.env" });
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 const db = new PrismaClient();
+var applicationNo = 0;
 
 app.use(express.json());
 app.use(cors({ "access-control-allow-origin": "*" }));
@@ -26,7 +28,8 @@ app.use(express.static(path.join(__dirname, "../client/build")));
 
 //This is for registration of application of user
 app.post("/createApplication", async (req, res) => {
-  const response = await createApplication(req.body);
+  applicationNo++;
+  const response = await createApplication(req.body, applicationNo);
   console.log("/createApplication");
   res.send(response);
 });
@@ -80,9 +83,14 @@ app.post("/changeStatus", async (req, res) => {
 //Sending Application to HOD
 app.post("/sendToHod", async (req, res) => {
   console.log("/sendToHod");
- 
+
   const response = await sendToHod(req.body);
   console.log(response);
+  res.send(response);
+});
+
+app.post("/sms", async (req, res) => {
+  const response = await sms(req.body);
   res.send(response);
 });
 
