@@ -41,8 +41,15 @@ CREATE TABLE `customer` (
     `remarks` VARCHAR(191) NOT NULL,
     `auth` VARCHAR(191) NOT NULL,
     `application_status` VARCHAR(191) NOT NULL,
+    `freq` VARCHAR(191) NOT NULL,
+    `category` VARCHAR(191) NOT NULL,
+    `mobileAck` VARCHAR(191) NOT NULL,
+    `area` VARCHAR(191) NOT NULL,
+    `rate` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `customer_id_key`(`id`),
+    UNIQUE INDEX `customer_application_no_key`(`application_no`),
+    UNIQUE INDEX `customer_customer_id_key`(`customer_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -56,8 +63,10 @@ CREATE TABLE `user` (
     `entry_date` VARCHAR(191) NOT NULL,
     `mod_date` VARCHAR(191) NOT NULL,
     `mod_by` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
 
-    UNIQUE INDEX `user_username_key`(`username`)
+    UNIQUE INDEX `user_username_key`(`username`),
+    UNIQUE INDEX `user_token_key`(`token`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -67,4 +76,12 @@ CREATE TABLE `sms` (
     `sms` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `sms_id_key`(`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `track` (
+    `id` INTEGER NOT NULL,
+    `lastApplicationNo` INTEGER NOT NULL,
+
+    UNIQUE INDEX `track_id_key`(`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
