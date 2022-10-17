@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { styles } from "./styles";
+import { useNavigate } from "react-router-dom";
 import Iframe from "react-iframe";
 import axios from "axios";
 import Paper from "@mui/material/Paper";
@@ -20,6 +21,8 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Checkbox, FormLabel } from "@mui/material";
 import UsrSign from "../signaturePad";
 export default function ApplicationDetails({ applicantData }) {
+
+  let navigate = useNavigate()
 
   const mediaQuery = window.matchMedia("(max-width: 650px)");
 
@@ -45,12 +48,13 @@ export default function ApplicationDetails({ applicantData }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/sendToHod", {
+      .post("/sendToHod", {
         applicantId: applicantData.id,
         token: localStorage.getItem("adminToken"),
         freq,category,mobileAck,area,rate
       })
       .then((res) => alert(res.data?.message));
+      // navigate("/depoManagerDashboard")
   };
 
   const divForScroll = useRef(null);

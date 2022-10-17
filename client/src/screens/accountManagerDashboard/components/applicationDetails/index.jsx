@@ -46,27 +46,50 @@ export default function AccountsApplicationDetails({ applicantData }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/createUser", {
+      .post("/createUser", {
         username: applicantData.application_no,
-        password: "password",
+        password: applicantData.application_no,
         role: "customer",
         application_no: applicantData.application_no,
         id: applicantData.id,
         mod_by: "account_manager",
-
       })
-      .then((res) => alert(res.data?.message));
+      .then((res) => {
+        changeStatusHandler()
+        sendSms()
+      });
   };
 
   const rejectHandler = async (e) => {
-    e.preventDefault();
     axios
-      .post("http://localhost:3001/changeStatus", {
+      .post("/changeStatus", {
         applicantId: applicantData.id,
         token: localStorage.getItem("adminToken"),
         newStatus : "rejected"
       })
       .then((res) => alert(res.data?.message));
+  };
+
+  const changeStatusHandler = async (e) => {
+    axios
+      .post("/changeStatus", {
+        applicantId: applicantData.id,
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE2NjU5ODc1Njl9.ZCahkiAVSko1SoywOXXV39hBrPc7KXKhj0z6xvwnHdU",
+        newStatus : "customerCreated"
+      })
+      .then((res) => {});
+  };
+
+  const sendSms = async () => {
+    axios
+      .post("/sms", {
+        phone:applicantData.mobile_no,
+        message: `Your customer id for TSUISL Bulk Gen., has been created, your user id : ${applicantData.application_no} and password : ${applicantData.application_no}`
+      })
+      .then((res) => {
+        alert("customer created");
+      }); 
+      
   };
 
   const divForScroll = useRef(null);
@@ -319,11 +342,11 @@ export default function AccountsApplicationDetails({ applicantData }) {
             </div>
           </Box>
         </Paper>
-        <Paper variant="outlined" sx={styles.fieldContainer}>
+        {/* <Paper variant="outlined" sx={styles.fieldContainer}>
           <Box sx={styles.row}>
             <UsrSign />
           </Box>
-        </Paper>
+        </Paper> */}
         <Stack direction="row" spacing={4}>
           <Button
             color="success"

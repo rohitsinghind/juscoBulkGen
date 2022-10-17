@@ -51,7 +51,7 @@ function App() {
             />
             <Route
               path="/applicationStatus"
-              element={<CustomerApplicationStatus />}
+              element={<CustomerApplicationStatus userData={userData}/>}
             />
             <Route path="/hodDashboard" element={<HodDashboard setApplicantData={setApplicantData}/>} />
             <Route

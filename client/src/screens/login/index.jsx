@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { styles } from "./styles";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -33,6 +34,12 @@ export default function Login() {
 
   const loginHandler = async (e) => {
     e.preventDefault();
+    const login = await axios.post("/login", creds).then((res) => {
+      localStorage.setItem("adminToken", res.data?.token);
+      console.log(res.data);
+
+      {res.data?.flag ? navigate(res.data?.data?.role == "hod"?"/hodDashboard":res.data?.data?.role == "depot_manager"?"/depoManagerDashboard":"/AccountManagerDashboard") : alert(res.data?.message)}
+    });
   };
 
   let navigate = useNavigate();
@@ -51,14 +58,14 @@ export default function Login() {
       >
         Track Your Application
       </Button>
-      <Button
+      {/* <Button
         onClick={() => {
           navigate("/adminLogin");
         }}
         variant="text"
       >
         Admin
-      </Button>
+      </Button> */}
       </Stack>
       <Container maxWidth="xl" sx={styles.container}>
         <Paper sx={styles.paper} variant="outlined">
@@ -106,9 +113,7 @@ export default function Login() {
           <Button
             variant="contained"
             sx={styles.loginBtn}
-            onClick={() => {
-              navigate("/customerDashboard");
-            }}
+            onClick={loginHandler}
           >
             Log in
           </Button>

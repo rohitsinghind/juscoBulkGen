@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { styles } from "./styles";
 import Iframe from "react-iframe";
 import axios from "axios";
@@ -24,6 +25,7 @@ import UsrSign from "../signaturePad";
 export default function HodApplicationDetails({ applicantData }) {
 
   console.log(applicantData)
+  let navigate = useNavigate()
 
   const mediaQuery = window.matchMedia("(max-width: 650px)");
 
@@ -49,22 +51,25 @@ export default function HodApplicationDetails({ applicantData }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/changeStatus", {
+      .post("/changeStatus", {
         applicantId: applicantData.id,
         token: localStorage.getItem("adminToken"),
         newStatus: "accepted"
       })
-      .then((res) => alert(res.data?.message));
+      .then((res) => {
+        alert(res.data?.message)
+        sendOtp()
+      });
 
   };
 
   const reviewHandler = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/changeStatus", {
+      .post("/changeStatus", {
         applicantId: applicantData.id,
         token: localStorage.getItem("adminToken"),
-        newStatus: "under_L1_Review"
+        newStatus: "depo"
       })
       .then((res) => alert(res.data?.message));
   };
@@ -72,12 +77,23 @@ export default function HodApplicationDetails({ applicantData }) {
   const rejectHandler = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/changeStatus", {
+      .post("/changeStatus", {
         applicantId: applicantData.id,
         token: localStorage.getItem("adminToken"),
         newStatus : "rejected"
       })
       .then((res) => alert(res.data?.message));
+  };
+
+  const sendOtp = async () => {
+    axios
+      .post("/sms", {
+        phone:applicantData.mobile_no,
+        message: `An ack is sent to your appl dashboard against the appl no. ${applicantData.application_no}.Please login to the system, give your response.`
+      })
+      .then((res) => {
+      }); 
+      
   };
 
   const divForScroll = useRef(null);
@@ -330,11 +346,11 @@ export default function HodApplicationDetails({ applicantData }) {
             </div>
           </Box>
         </Paper>
-        <Paper variant="outlined" sx={styles.fieldContainer}>
+        {/* <Paper variant="outlined" sx={styles.fieldContainer}>
           <Box sx={styles.row}>
             <UsrSign />
           </Box>
-        </Paper>
+        </Paper> */}
         <Stack direction="row" spacing={4}>
           <Button
             color="success"
@@ -342,14 +358,14 @@ export default function HodApplicationDetails({ applicantData }) {
             sx={styles.submitBtn}
             onClick={submitHandler}
           >
-            Submit Application
+            Approve
           </Button>
           <Button
             variant="contained"
             sx={styles.submitBtn}
             onClick={reviewHandler}
           >
-            Send to Level 1
+            Send for review
           </Button>
           <Button
             color="error"
@@ -357,7 +373,7 @@ export default function HodApplicationDetails({ applicantData }) {
             sx={styles.submitBtn}
             onClick={rejectHandler}
           >
-            Reject Application
+            Reject
           </Button>
         </Stack>
         <IconButton

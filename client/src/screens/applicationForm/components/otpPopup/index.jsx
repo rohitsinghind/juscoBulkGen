@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { styles } from './styles'
 
@@ -18,6 +18,21 @@ export default function OtpPopup(props) {
 
   let navigate = useNavigate();
 
+  const [otp, setOtp] = useState("")
+
+  const handleSubmit = () => {
+    if(otp === props.otp.toString()){
+      props.submitHandler()
+    }
+    else{
+      alert("invalid OTP")
+    }
+  };
+
+  console.log(otp);
+  console.log(props.otp)
+
+
   return (
     <>
       <Dialog open={props.open} onClose={handleClose}>
@@ -34,6 +49,9 @@ export default function OtpPopup(props) {
             type="number"
             fullWidth
             variant="standard"
+            onChange={(e) => {
+              setOtp(e.target.value);
+            }}
           />
 
         <DialogContentText sx={{mt:"25px"}}>
@@ -47,11 +65,12 @@ export default function OtpPopup(props) {
             type="number"
             fullWidth
             variant="standard"
+            
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={()=>{navigate("/trackYourApplication")}}>Verify</Button>
+          <Button onClick={handleSubmit}>Verify</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import { styles } from './styles'
 
@@ -18,13 +18,24 @@ export default function TrackOtpPopup(props) {
 
   let navigate = useNavigate();
 
+  const [otp, setOtp] = useState("")
+
+  const handleSubmit = () => {
+    if(otp === props.otp.toString()){
+      props.otpVerified()
+    }
+    else{
+      alert("invalid OTP")
+    }
+  };
+
   return (
     <>
       <Dialog open={props.open} onClose={handleClose}>
         <DialogTitle>OTP Verification</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter OTP we've sent you on +91-xxxxxxxxx or abx@xyz.com
+            Please enter OTP we've sent you on +91-xxxxx{props.mobile}
           </DialogContentText>
           <TextField
             autoFocus
@@ -34,11 +45,14 @@ export default function TrackOtpPopup(props) {
             type="number"
             fullWidth
             variant="standard"
+            onChange={(e) => {
+              setOtp(e.target.value);
+            }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={()=>{navigate("/customerDashboard")}}>Verify</Button>
+          <Button onClick={handleSubmit}>Verify</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { styles } from "./styles";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import OtpPopup from "./components/otpPopup";
 import PrivacyPolicyPopup from "./components/privacyPolicyPopup";
@@ -28,8 +29,12 @@ import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { FormLabel } from "@mui/material";
+import { Navigate } from "react-router-dom";
 
 export default function ApplicationForm() {
+
+  let navigate = useNavigate()
+
   const divForScroll = useRef(null);
 
   const [privacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
@@ -79,6 +84,8 @@ export default function ApplicationForm() {
 
   const [btn, setBtn] = useState(false);
 
+  const [otp, setOtp] = useState("");
+
   const handleChange = (key) => {
     key.preventDefault();
     setCreds({ ...creds, [key.target.id]: key.target.value });
@@ -106,13 +113,13 @@ export default function ApplicationForm() {
   };
 
   const submitHandler = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     axios
-      .post("http://localhost:3001/createApplication", {
+      .post("/createApplication", {
         salutation: salutation,
         Fname: creds.Fname,
         Lname: creds.Lname,
-        mobile: creds.mobile,
+        mobile: creds.mobile.substring(creds.mobile.length-10),
         email: creds.email,
         designation: creds.designation,
         doctype1,
@@ -145,12 +152,40 @@ export default function ApplicationForm() {
         qty:creds.qty,
         remarks:creds.remarks,
       })
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        // console.log(res.data)
+        // alert(res.data?.message)
+        navigate("/trackYourApplication")
+      });
 
-    setOpen(true);
+    // setOpen(true);
   };
 
+  // console.log(creds.mobile.substring(creds.mobile.length-10))
+
   const mediaQuery = window.matchMedia("(max-width: 550px)");
+
+  const generateOtp =() => {
+   setOtp(Math.floor(100000 + Math.random() * 900000))
+  };
+
+  const sendOtp = async () => {
+    axios
+      .post("/sms", {
+        phone:creds.mobile.substring(creds.mobile.length-10),
+        message: `Your OTP for TSUISL Bulk Generation application is ${otp}`
+      })
+      .then((res) => {
+        alert("OTP " + res.data?.message);
+        setOpen(true)
+      }); 
+      
+  };
+
+  useEffect(() => {
+    generateOtp()
+  }, [])
+  
 
   return (
     <>
@@ -281,14 +316,38 @@ export default function ApplicationForm() {
             <Box sx={styles.inputField}></Box>
           </Box>
           <Box sx={styles.row}>
-            <Typography
+            {/* <Typography
               onClick={() => {
                 setPrivacyPolicyOpen(true);
               }}
               sx={styles.info}
             >
               Privacy Policy goes here
-            </Typography>
+            </Typography> */}
+            <div
+          onClick={() => {
+            setPrivacyPolicyOpen(true);
+          }}
+          style={{ display: "flex", justifyContent: "start", width: "70%" }}
+        >
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  // checked={}
+                  // onChange={()=>
+                  // {if(btn==true){
+                  //     setBtn(false)
+                  //     }
+                  //   else{
+                  //     setBtn(true)
+                  //   }}}
+                />
+              }
+              label="Privacy Policy"
+            />
+          </FormGroup>
+        </div>
           </Box>
         </Paper>
 
@@ -317,7 +376,7 @@ export default function ApplicationForm() {
             <TextField
               size="small"
               id="doc1No"
-              type="number"
+              type="text"
               label="Document No."
               placeholder="Document No."
               value={creds.doc1No || ""}
@@ -360,7 +419,7 @@ export default function ApplicationForm() {
             <TextField
               size="small"
               id="doc2No"
-              type="number"
+              type="text"
               label="Document No."
               placeholder="Document No."
               value={creds.doc2No || ""}
@@ -403,7 +462,7 @@ export default function ApplicationForm() {
             <TextField
               size="small"
               id="doc3No"
-              type="number"
+              type="text"
               label="Document No."
               placeholder="Document No."
               value={creds.doc3No || ""}
@@ -774,8 +833,8 @@ export default function ApplicationForm() {
         <Button
           variant="contained"
           sx={styles.submitBtn}
-          onClick={submitHandler}
-          disabled={!btn}
+          onClick={sendOtp}
+          disabled={!btn || (creds.cmobile !== creds.mobile) || (creds.cemail !== creds.email)}
         >
           Submit Application
         </Button>
@@ -793,7 +852,9 @@ export default function ApplicationForm() {
       </Container>
 
       <OtpPopup
-        phone={creds.mobile}
+        otp={otp}
+        submitHandler={submitHandler}
+        phone={creds.mobile.substring(creds.mobile.length-10)}
         email={creds.email}
         open={open}
         setOpen={setOpen}

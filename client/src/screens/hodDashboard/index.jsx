@@ -41,7 +41,7 @@ export default function HodDashboard(props) {
 
   const fetchApplicants = async (e) => {
     axios
-      .post("http://localhost:3001/getApplications", {
+      .post("https://jusco-bulk-gen-server.herokuapp.com/getApplications", {
         token:localStorage.getItem("adminToken")
       })
       .then((res) => setApplicants(res.data?.data));
@@ -64,7 +64,7 @@ export default function HodDashboard(props) {
 
         <Typography sx={styles.head}>Bulk Generation System</Typography>
         <Typography sx={styles.dashboardText}>
-          {props.admin || "Depot Manager"} Dashboard
+          HOD Dashboard
         </Typography>
         <Box sx={styles.tabItemContainer}>
           <PopupState

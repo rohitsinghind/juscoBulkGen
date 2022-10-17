@@ -43,7 +43,7 @@ export default function AccountManagerDashboard(props) {
 
   const fetchApplicants = async (e) => {
     axios
-      .post("http://localhost:3001/getApplications", {
+      .post("/getApplications", {
         token:localStorage.getItem("adminToken")
       })
       .then((res) => setApplicants(res.data?.data));
@@ -66,7 +66,7 @@ export default function AccountManagerDashboard(props) {
 
         <Typography sx={styles.head}>Bulk Generation System</Typography>
         <Typography sx={styles.dashboardText}>
-          {props.admin || "Depot Manager"} Dashboard
+          Billing Dashboard
         </Typography>
         <Box sx={styles.tabItemContainer}>
           <PopupState

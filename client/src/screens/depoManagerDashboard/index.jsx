@@ -43,7 +43,7 @@ export default function DepoManagerDashboard(props) {
 
   const fetchApplicants = async (e) => {
     axios
-      .post("http://localhost:3001/getApplications", {
+      .post("/getApplications", {
         token:localStorage.getItem("adminToken")
       })
       .then((res) => setApplicants(res.data?.data));

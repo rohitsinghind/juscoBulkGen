@@ -67,7 +67,7 @@ export default function ApplicationTable({ data, actionLink, setApplicantData}) 
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
+            {data.filter((e)=>e.status === "depo").map((row) => (
               <StyledTableRow key={row.application_no}>
                 <StyledTableCell align="right"></StyledTableCell>
                 <StyledTableCell component="th" scope="row">
