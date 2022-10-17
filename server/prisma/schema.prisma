@@ -7,13 +7,14 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://jusco_bulk_gen_2:MyPassword210@170.187.231.66:3306/jusco_bulk_gen_temp"
+  // url      = "mysql://jusco_bulk_gen_2:MyPassword210@170.187.231.66:3306/jusco_bulk_gen_temp"
+  url      = "mysql://root:root@localhost:3306/jusco_bulk_gen_temp" //Do not delete this
 }
 
 model customer {
   id                   String @id @unique
-  application_no       String
-  customer_id          String
+  application_no       String @unique
+  customer_id          String @unique
   status               String
   salutation           String
   first_name           String
@@ -75,4 +76,9 @@ model sms {
   id   String @unique
   flag String
   sms  String
+}
+
+model track {
+  id                Int @unique
+  lastApplicationNo Int
 }

@@ -34,7 +34,7 @@ async function getAllApplication({ token }) {
   } else if (usr.role == "account_manager") {
     const applicants = await db.customer.findMany({
       where: {
-        status: "accepted",
+        status: "customerAccepted",
       },
     });
     console.log(applicants);
